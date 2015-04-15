@@ -1,6 +1,6 @@
 # gulp-html-minify
 
-自用，简单html压缩工具gulp插件 html minify
+自用插件，简单html压缩工具gulp插件 html minify
 
 ###how to use:
 
