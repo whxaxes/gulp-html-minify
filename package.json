@@ -1,6 +1,6 @@
 {
   "name": "gulp-html-minify",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "html minify",
   "main": "index.js",
   "dependencies": {
@@ -16,5 +16,16 @@
     "minify"
   ],
   "author": "wanghx",
-  "license": "ISC"
+  "license": "ISC",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whxaxes/gulp-html-minify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/whxaxes/gulp-html-minify/issues"
+  },
+  "homepage": "https://github.com/whxaxes/gulp-html-minify"
 }

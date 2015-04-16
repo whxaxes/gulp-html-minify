@@ -1,30 +1,33 @@
 var through = require("through2");
 var uglifyjs = require("uglify-js");
 
-module.exports = function(){
-    return through.obj(function(file, encoding, done) {
+module.exports = function (nonote) {
+    return through.obj(function (file, encoding, done) {
         var str = String(file.contents);
-        var count = str.length+1;
+        var count = str.length + 1;
         var text = "";
         var nstr = "";
         var scriptStart = false;
         var scriptCollector = "";
 
-        while(count-- > 0){
-            var index = str.length-count;
+        //去除注释
+        if (!nonote) str = str.replace(/(<!--[\s\S]*?-->)*/g, '').replace(/(\/\*[\s\S]*?\*\/)*/g, '');
+
+        while (count-- > 0) {
+            var index = str.length - count;
 
             var ref = str.charAt(index);
             //逐行读取
-            if((ref=='\r' && str.charAt(index+1)=='\n') || index==str.length){
-                text = text.replace(/(^(\s+))|((\s+)$)/g , '');
+            if ((ref == '\r' && str.charAt(index + 1) == '\n') || index == str.length) {
+                text = text.replace(/(^(\s+))|((\s+)$)/g, '');
 
                 if (text.match(/^<script[\s\S]*>$/g) && !text.match(/(text\/template)|x-tmpl-mustache/g)) {
                     nstr += text;
                     scriptStart = true;
                 } else if (scriptStart && text.match(/^<\/script>$/g)) {
-                    try{
-                        nstr += uglifyjs.minify(scriptCollector , {fromString:true}).code + text;
-                    }catch (e){
+                    try {
+                        nstr += uglifyjs.minify(scriptCollector, {fromString: true}).code + text;
+                    } catch (e) {
                         nstr += scriptCollector + text;
                     }
                     scriptStart = false;
@@ -36,7 +39,7 @@ module.exports = function(){
 
                 text = "";
                 count--;
-            }else {
+            } else {
                 text += ref;
             }
         }
