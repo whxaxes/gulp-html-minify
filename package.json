@@ -1,6 +1,6 @@
 {
   "name": "gulp-html-minify",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "html minify",
   "main": "index.js",
   "dependencies": {
@@ -16,7 +16,7 @@
     "minify"
   ],
   "author": "wanghx",
-  "license": "ISC",
+  "license": "MIT",
   "directories": {
     "test": "test"
   },
