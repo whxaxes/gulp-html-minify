@@ -23,7 +23,7 @@ module.exports = function (nonote) {
                 text = text.replace(/(^(\s+))|((\s+)$)/g, '');
 
                 //防止前端模板也被当成js，因此过滤一部分，包括type="text/template"和type="x-tmpl-mustache"，若有其他需求再加
-                if (text.match(/^<script[\s\S]*>$/g) && !text.match(/(text\/template)|x-tmpl-mustache/g)) {
+                if (text.match(/^<script[a-zA-Z="'/ -]*>$/g) && !text.match(/(text\/template)|x-tmpl-mustache/g)) {
                     nstr += text;
                     scriptStart = true;
                 } else if (scriptStart && text.match(/^<\/script>$/g)) {
