@@ -1,3 +1,5 @@
+"use strict";
+
 var through = require("through2");
 var uglifyjs = require("uglify-js");
 
