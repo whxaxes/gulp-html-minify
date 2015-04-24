@@ -2,7 +2,10 @@
 
 自用插件，简单html压缩工具gulp插件 html minify
 
-##Use:
+##Install
+    npm install gulp-html-minify
+
+##Usage:
     var htmlminify = require("gulp-html-minify");
     gulp.task('build-html' , function(){
         return gulp.src("./html-init/**/*.html")
