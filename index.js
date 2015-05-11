@@ -34,6 +34,7 @@ module.exports = function (nonote) {
                     } catch (e) {
                         nstr += scriptCollector + text;
                     }
+                    scriptCollector = "";
                     scriptStart = false;
                 } else if (scriptStart) {
                     scriptCollector += text + "\r\n";

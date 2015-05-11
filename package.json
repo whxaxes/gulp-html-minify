@@ -1,6 +1,6 @@
 {
   "name": "gulp-html-minify",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "html minify",
   "main": "index.js",
   "dependencies": {
