@@ -3,8 +3,13 @@
 var through = require("through2");
 var uglifyjs = require("uglify-js");
 
-module.exports = function (nonote) {
-    return through.obj(function (file, encoding, done) {
+/**
+ * compressed html
+ * @param nonote    remove annotation or not
+ * @returns {*}
+ */
+var minify = function(nonote){
+    var _transform = function(file, encoding, done){
         var str = file.contents.toString();
         var count = str.length + 1;
         var text = "";
@@ -12,7 +17,7 @@ module.exports = function (nonote) {
         var scriptStart = false;
         var scriptCollector = "";
 
-        //去除注释包括html的<!--XX-->和css的/**/，js的注释由uglify处理
+        //remove annotation like <!--XX--> or /**/
         if (!nonote) str = str.replace(/<!--[\s\S]*?-->|(?:\/\*[\s\S]*?\*\/)*/g, '');
 
         while (count-- > 0) {
@@ -20,15 +25,16 @@ module.exports = function (nonote) {
 
             var ref = str.charAt(index);
 
-            //逐行读取
+            //read file line by line
             if (ref.match(/\r|\n/) || index == str.length) {
                 text = text.replace(/^\s+|\s+$/g, '');
 
-                //防止前端模板也被当成js，因此过滤一部分，包括type="text/template"和type="x-tmpl-mustache"，若有其他需求再加
+                //template script filter
                 if (text.match(/^<script[a-zA-Z="'/ -]*>$/g) && !text.match(/text\/template|x-tmpl-mustache/g)) {
                     nstr += text;
                     scriptStart = true;
                 } else if (scriptStart && text.match(/^<\/script>$/g)) {
+                    //use uglifyjs to compressed the js in the html
                     try {
                         nstr += uglifyjs.minify(scriptCollector, {fromString: true}).code + text;
                     } catch (e) {
@@ -52,5 +58,9 @@ module.exports = function (nonote) {
 
         this.push(file);
         done();
-    });
-}
+    };
+
+    return through.obj(_transform());
+};
+
+module.exports = minify;
