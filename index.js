@@ -60,7 +60,7 @@ var minify = function(nonote){
         done();
     };
 
-    return through.obj(_transform());
+    return through.obj(_transform);
 };
 
 module.exports = minify;
