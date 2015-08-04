@@ -4,6 +4,7 @@ var through = require("through2");
 var uglifyjs = require("uglify-js");
 
 var annoRe = /<!--[\s\S]*?-->|(?:\/\*[\s\S]*?\*\/)*/g;
+var tagStartRe = /(?:<[a-z-0-9]+)$/i;
 
 // ignore script type
 var ignoreScriptTypes = [
@@ -66,7 +67,7 @@ var minify = function(nonote){
                     scol.push(nline);
                 } else {
 
-                    if(/(?:<[a-z-]+)$/i.test(nstr)){
+                    if(tagStartRe.test(nstr)){
                         nstr += " ";
                     }
 
