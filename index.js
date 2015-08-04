@@ -55,7 +55,7 @@ var minify = function(nonote){
 
                     //use uglifyjs to compressed the js in the html
                     try {
-                        console.log(scripts)
+                        //console.log(scripts)
                         nstr += uglifyjs.minify(scripts, {fromString: true}).code + nline;
                     } catch (e) {
                         console.log(e)
