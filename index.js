@@ -3,60 +3,86 @@
 var through = require("through2");
 var uglifyjs = require("uglify-js");
 
+var annoRe = /<!--[\s\S]*?-->|(?:\/\*[\s\S]*?\*\/)*/g;
+
+// ignore script type
+var ignoreScriptTypes = [
+    "text/template",
+    "x-tmpl-mustache"
+];
+
 /**
  * compressed html
  * @param nonote    remove annotation or not
  * @returns {*}
  */
 var minify = function(nonote){
+    var typeIgnoreRe = new RegExp(ignoreScriptTypes.join("|").replace(/\//g, "\\/"));
+
     var _transform = function(file, encoding, done){
         var str = file.contents.toString();
         var count = str.length + 1;
-        var text = "";
+        var nline = "";
         var nstr = "";
+        var index, ref, scripts;
+
         var scriptStart = false;
-        var scriptCollector = "";
+
+        // javascript collector
+        var scol = [];
 
         //remove annotation like <!--XX--> or /**/
-        if (!nonote) str = str.replace(/<!--[\s\S]*?-->|(?:\/\*[\s\S]*?\*\/)*/g, '');
+        if (!nonote) str = str.replace(annoRe, '');
 
         while (count-- > 0) {
-            var index = str.length - count;
-
-            var ref = str.charAt(index);
+            index = str.length - count;
+            ref = str.charAt(index);
 
             //read file line by line
             if (ref.match(/\r|\n/) || index == str.length) {
-                text = text.replace(/^\s+|\s+$/g, '');
+                nline = nline.trim();
+
+                if(!nline) continue;
 
                 //template script filter
-                if (text.match(/^<script[a-zA-Z="'/ -]*>$/g) && !text.match(/text\/template|x-tmpl-mustache/g)) {
-                    nstr += text;
+                if (nline.match(/^<script[^>]*?>$/g) && !nline.match(typeIgnoreRe)) {
+                    nstr += nline;
                     scriptStart = true;
-                } else if (scriptStart && text.match(/^<\/script>$/g)) {
+                } else if (scriptStart && nline.match(/^<\/script>$/g)) {
+                    scripts = scol.join("\n");
+                    scol.length = 0;
+                    scriptStart = false;
+
                     //use uglifyjs to compressed the js in the html
                     try {
-                        nstr += uglifyjs.minify(scriptCollector, {fromString: true}).code + text;
+                        console.log(scripts)
+                        nstr += uglifyjs.minify(scripts, {fromString: true}).code + nline;
                     } catch (e) {
-                        nstr += scriptCollector + text;
+                        console.log(e)
+                        nstr += scripts + nline;
                     }
-                    scriptCollector = "";
-                    scriptStart = false;
+
                 } else if (scriptStart) {
-                    scriptCollector += text + "\r\n";
+                    scol.push(nline);
                 } else {
-                    nstr += text;
+
+                    if(/(?:<[a-z-]+)$/i.test(nstr)){
+                        nstr += " ";
+                    }
+
+                    nstr += nline;
                 }
 
-                text = "";
+                nline = "";
             } else {
-                text += ref;
+                nline += ref;
             }
         }
 
         file.contents = new Buffer(nstr);
 
         this.push(file);
+
         done();
     };
 
