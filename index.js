@@ -17,10 +17,10 @@ var ignoreScriptTypes = [
  * @param nonote    remove annotation or not
  * @returns {*}
  */
-var minify = function (nonote) {
+var minify = function(nonote) {
   var typeIgnoreRe = new RegExp(ignoreScriptTypes.join("|").replace(/\//g, "\\/"));
 
-  var _transform = function (file, encoding, done) {
+  var _transform = function(file, encoding, done) {
     if (!file || !file.contents) return done();
     var str = file.contents.toString();
     var count = str.length + 1;
