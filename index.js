@@ -22,6 +22,7 @@ var minify = function(nonote) {
 
   var _transform = function(file, encoding, done) {
     if (!file || !file.contents) return done();
+
     var str = file.contents.toString();
     var count = str.length + 1;
     var nline = "";
@@ -83,9 +84,7 @@ var minify = function(nonote) {
 
     file.contents = new Buffer(nstr);
 
-    this.push(file);
-
-    done();
+    done(null, file);
   };
 
   return through.obj(_transform);
