@@ -7,7 +7,7 @@ A simple gulp plugin, used to compressed html
 ## Install
     npm install gulp-html-minify
 
-## Usage:
+## Usage
 ```
 var htmlminify = require("gulp-html-minify");
 gulp.task('build-html' , function(){
