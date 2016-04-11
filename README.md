@@ -17,6 +17,17 @@ gulp.task('build-html' , function(){
 });
 ```
 
+
+## Running Test
+```
+make test
+```
+
+
+## License
+MIT
+
+
 [npm-url]: https://npmjs.org/package/gulp-html-minify
 [npm-image]: http://img.shields.io/npm/v/gulp-html-minify.svg
 [travis-url]: https://travis-ci.org/whxaxes/gulp-html-minify
